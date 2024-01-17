@@ -25,8 +25,7 @@ module Bp3
 
               private
 
-              # override SiteScoped method to use the parent record, if it *is* a site, or
-              # if it *has* a site
+              # override Tenantable methods to use the parent record, if available
               def set_sites_site_id
                 self.sites_site_id = if record.is_a?(Sites::Site)
                                        record.id
@@ -34,6 +33,28 @@ module Bp3
                                        record.sites_site_id
                                      end
                 return if sites_site_id.present?
+
+                super
+              end
+
+              def set_tenant_id
+                self.tenant_id = if record.is_a?(Tenant)
+                                   record.id
+                                 elsif record.respond_to?(:tenant_id)
+                                   record.tenant_id
+                                 end
+                return if tenant_id.present?
+
+                super
+              end
+
+              def set_workspaces_workspace_id
+                self.workspaces_workspace_id = if record.is_a?(Workspaces::Workspace)
+                                                 record.id
+                                               elsif record.respond_to?(:workspaces_workspace_id)
+                                                 record.workspaces_workspace_id
+                                               end
+                return if workspaces_workspace_id.present?
 
                 super
               end

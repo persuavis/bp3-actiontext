@@ -6,7 +6,8 @@ module Bp3
   module Actiontext
     class Railtie < Rails::Railtie
       initializer 'bp3.actiontext.railtie.register' do |app|
-        app.config.after_initialize do # preload
+        app.config.after_initialize do
+          ::ActionText::RichText # preload
           module ::ActionText
             class RichText
               include Bp3::Core::Rqid
@@ -18,16 +19,13 @@ module Bp3
               use_sqnr_for_ordering
               has_paper_trail
 
-              belongs_to :tenant, optional: true
-              belongs_to :workspaces_workspace, class_name: 'Workspaces::Workspace', optional: true
-
               validates :name, uniqueness: { scope: %w[sites_site_id record_type record_id locale] }
 
               private
 
-              # override Tenantable methods to use the parent record, if available
+              # override Tenantable#set_sites_site_id to use the parent record, if available
               def set_sites_site_id
-                self.sites_site_id = if record.is_a?(Sites::Site)
+                self.sites_site_id = if record.is_a?(Bp3::Actiontext.site_class)
                                        record.id
                                      elsif record.respond_to?(:sites_site_id)
                                        record.sites_site_id
@@ -37,8 +35,9 @@ module Bp3
                 super
               end
 
+              # override Tenantable#set_tenant_id to use the parent record, if available
               def set_tenant_id
-                self.tenant_id = if record.is_a?(Tenant)
+                self.tenant_id = if record.is_a?(Bp3::Actiontext.tenant_class)
                                    record.id
                                  elsif record.respond_to?(:tenant_id)
                                    record.tenant_id
@@ -48,8 +47,9 @@ module Bp3
                 super
               end
 
+              # override Tenantable#set_workspaces_workspace_id to use the parent record, if available
               def set_workspaces_workspace_id
-                self.workspaces_workspace_id = if record.is_a?(Workspaces::Workspace)
+                self.workspaces_workspace_id = if record.is_a?(Bp3::Actiontext.workspace_class)
                                                  record.id
                                                elsif record.respond_to?(:workspaces_workspace_id)
                                                  record.workspaces_workspace_id

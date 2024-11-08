@@ -42,21 +42,11 @@ module Bp3
                                  elsif record.respond_to?(:tenant_id)
                                    record.tenant_id
                                  end
-                return if tenant_id.present?
-
-                super
-              end
-
-              # override Tenantable#set_workspaces_workspace_id to use the parent record, if available
-              def set_workspaces_workspace_id
-                self.workspaces_workspace_id = if record.is_a?(Bp3::Actiontext.workspace_class)
-                                                 record.id
-                                               elsif record.respond_to?(:workspaces_workspace_id)
-                                                 record.workspaces_workspace_id
-                                               end
-                return if workspaces_workspace_id.present?
-
-                super
+                # don't call super, as we do NOT want to use a global state tenant
+                # and tenant is not required
+                # return if tenant_id.present?
+                #
+                # super
               end
             end
           end

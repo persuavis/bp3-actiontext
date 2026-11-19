@@ -11,15 +11,15 @@ module Bp3
     mattr_accessor :site_class_name, :tenant_class_name, :workspace_class_name
 
     def self.site_class
-      @@site_class ||= site_class_name.constantize # rubocop:disable Style/ClassVars
+      site_class_name.constantize
     end
 
     def self.tenant_class
-      @@tenant_class ||= tenant_class_name.constantize # rubocop:disable Style/ClassVars
+      tenant_class_name.constantize
     end
 
     def self.workspace_class
-      @@workspace_class ||= workspace_class_name.constantize # rubocop:disable Style/ClassVars
+      workspace_class_name.constantize
     end
   end
 end

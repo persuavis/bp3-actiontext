@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-20
+
+- Require Ruby 4.0.10 and update Bundler to 4.1.0
+- Remove constantize memoization
+- Update gems
+- Add CLAUDE.md file
+
 ## [0.1.4] - 2026-01-12
 
 - Update gems
